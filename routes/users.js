@@ -47,6 +47,78 @@ router.post('/watch-history', auth, async (req, res) => {
   }
 });
 
+// @route   GET /api/users/profile
+// @desc    Get user profile with stats
+// @access  Private
+router.get('/profile', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id)
+      .populate('favorites', 'title poster rating')
+      .populate('watchHistory.movie', 'title poster rating')
+      .select('-password');
+
+    // Calculate user stats
+    const totalWatched = user.watchHistory.length;
+    const totalFavorites = user.favorites.length;
+    
+    // Get favorite genres
+    const favoriteGenres = {};
+    user.watchHistory.forEach(item => {
+      if (item.movie && item.movie.genre) {
+        item.movie.genre.forEach(genre => {
+          favoriteGenres[genre] = (favoriteGenres[genre] || 0) + 1;
+        });
+      }
+    });
+
+    const topGenres = Object.keys(favoriteGenres)
+      .sort((a, b) => favoriteGenres[b] - favoriteGenres[a])
+      .slice(0, 3);
+
+    res.json({
+      success: true,
+      data: {
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          createdAt: user.createdAt
+        },
+        stats: {
+          totalWatched,
+          totalFavorites,
+          topGenres
+        },
+        recentWatched: user.watchHistory.slice(0, 5),
+        favorites: user.favorites.slice(0, 5)
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @route   DELETE /api/users/watch-history/:movieId
+// @desc    Remove movie from watch history
+// @access  Private
+router.delete('/watch-history/:movieId', auth, async (req, res) => {
+  try {
+    const { movieId } = req.params;
+
+    await User.findByIdAndUpdate(
+      req.user._id,
+      { $pull: { watchHistory: { movie: movieId } } }
+    );
+
+    res.json({
+      success: true,
+      message: 'Removed from watch history'
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // @route   GET /api/users/watch-history
 // @desc    Get user's watch history
 // @access  Private

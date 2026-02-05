@@ -62,28 +62,43 @@ npm start
 
 ### Movies
 - `GET /api/movies` - Get all movies (with search, filter, sort, pagination)
+- `GET /api/movies/popular` - Get popular movies (most viewed)
+- `GET /api/movies/trending` - Get trending movies (last 7 days)
+- `GET /api/movies/top-rated` - Get top rated movies
+- `GET /api/movies/stats` - Get movie statistics
 - `GET /api/movies/:id` - Get single movie
 - `POST /api/movies` - Create new movie (Protected)
+- `PUT /api/movies/:id` - Update movie (Protected)
+- `DELETE /api/movies/:id` - Delete movie (Protected)
 - `PUT /api/movies/:id/view` - Increment view count (Protected)
 
 ### User Features
+- `GET /api/users/profile` - Get user profile with stats (Protected)
 - `POST /api/users/watch-history` - Add movie to watch history (Protected)
 - `GET /api/users/watch-history` - Get user's watch history (Protected)
+- `DELETE /api/users/watch-history/:movieId` - Remove from watch history (Protected)
 - `POST /api/users/favorites` - Add/remove movie from favorites (Protected)
 - `GET /api/users/favorites` - Get user's favorite movies (Protected)
 - `GET /api/users/recommendations` - Get personalized recommendations (Protected)
 
-## Query Parameters for Movies
+## Advanced Query Parameters for Movies
 
 - `search` - Search in title, description, and genre
 - `genre` - Filter by genre
 - `year` - Filter by release year
+- `minRating` - Minimum rating filter
+- `maxRating` - Maximum rating filter
+- `minDuration` - Minimum duration in minutes
+- `maxDuration` - Maximum duration in minutes
+- `director` - Filter by director name
 - `sortBy` - Sort field (default: createdAt)
 - `sortOrder` - Sort order: asc/desc (default: desc)
 - `page` - Page number (default: 1)
 - `limit` - Items per page (default: 10)
 
-Example: `GET /api/movies?search=action&genre=Action&sortBy=rating&sortOrder=desc&page=1&limit=5`
+Examples:
+- `GET /api/movies?search=action&genre=Action&minRating=8&sortBy=rating&sortOrder=desc`
+- `GET /api/movies?director=nolan&minDuration=120&maxDuration=180`
 
 ## Authentication
 
