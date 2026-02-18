@@ -1,6 +1,8 @@
 const express = require('express');
 const Movie = require('../models/Movie');
+const User = require('../models/User');
 const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 
 const router = express.Router();
 
@@ -108,9 +110,9 @@ router.get('/:id', async (req, res) => {
 });
 
 // @route   POST /api/movies
-// @desc    Create movie (Admin only - simplified for now)
-// @access  Private
-router.post('/', auth, async (req, res) => {
+// @desc    Create movie (Admin only)
+// @access  Private/Admin
+router.post('/', auth, admin, async (req, res) => {
   try {
     const movie = new Movie(req.body);
     await movie.save();
@@ -125,9 +127,9 @@ router.post('/', auth, async (req, res) => {
 });
 
 // @route   PUT /api/movies/:id
-// @desc    Update movie
-// @access  Private
-router.put('/:id', auth, async (req, res) => {
+// @desc    Update movie (Admin only)
+// @access  Private/Admin
+router.put('/:id', auth, admin, async (req, res) => {
   try {
     const movie = await Movie.findByIdAndUpdate(
       req.params.id,
@@ -149,9 +151,9 @@ router.put('/:id', auth, async (req, res) => {
 });
 
 // @route   DELETE /api/movies/:id
-// @desc    Delete movie (soft delete)
-// @access  Private
-router.delete('/:id', auth, async (req, res) => {
+// @desc    Delete movie (soft delete - Admin only)
+// @access  Private/Admin
+router.delete('/:id', auth, admin, async (req, res) => {
   try {
     const movie = await Movie.findByIdAndUpdate(
       req.params.id,

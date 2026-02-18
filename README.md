@@ -44,7 +44,13 @@ NODE_ENV=development
 
 4. Start MongoDB service on your machine
 
-5. Run the application
+5. Load sample data and create admin
+```bash
+npm run seed          # Load sample movies
+npm run create-admin  # Create admin user (admin/admin123456)
+```
+
+6. Run the application
 ```bash
 # Development mode
 npm run dev
@@ -80,6 +86,15 @@ npm start
 - `POST /api/users/favorites` - Add/remove movie from favorites (Protected)
 - `GET /api/users/favorites` - Get user's favorite movies (Protected)
 - `GET /api/users/recommendations` - Get personalized recommendations (Protected)
+
+### Reviews
+- `POST /api/reviews` - Create a review (Protected)
+- `GET /api/reviews/movie/:movieId` - Get reviews for a movie (Public)
+- `GET /api/reviews/user/my-reviews` - Get current user's reviews (Protected)
+- `PUT /api/reviews/:id` - Update a review (Protected)
+- `DELETE /api/reviews/:id` - Delete a review (Protected)
+- `PUT /api/reviews/:id/approve` - Approve review (Protected/Admin)
+- `GET /api/reviews/pending` - Get pending reviews (Protected/Admin)
 
 ## Advanced Query Parameters for Movies
 

@@ -6,6 +6,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const movieRoutes = require('./routes/movies');
 const userRoutes = require('./routes/users');
+const reviewRoutes = require('./routes/reviews');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/movies', movieRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
