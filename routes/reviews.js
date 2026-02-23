@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const { body, validationResult } = require('express-validator');
 const Review = require('../models/Review');
 const Movie = require('../models/Movie');
@@ -189,7 +190,7 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to delete this review' });
     }
 
-    await Review.findByIdAndRemove(req.params.id);
+    await Review.findByIdAndDelete(req.params.id);
 
     res.json({
       success: true,
