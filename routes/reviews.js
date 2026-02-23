@@ -62,6 +62,43 @@ router.post('/', auth, [
   }
 });
 
+// @route   GET /api/reviews/user/my-reviews
+// @desc    Get current user's reviews
+// @access  Private
+router.get('/user/my-reviews', auth, async (req, res) => {
+  try {
+    const reviews = await Review.find({ user: req.user._id })
+      .populate('movie', 'title poster')
+      .sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      data: reviews
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @route   GET /api/reviews/pending
+// @desc    Get pending reviews (Admin only)
+// @access  Private/Admin
+router.get('/pending', auth, admin, async (req, res) => {
+  try {
+    const reviews = await Review.find({ isApproved: false })
+      .populate('user', 'username')
+      .populate('movie', 'title')
+      .sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      data: reviews
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // @route   GET /api/reviews/movie/:movieId
 // @desc    Get all reviews for a movie
 // @access  Public
@@ -109,24 +146,6 @@ router.get('/movie/:movieId', async (req, res) => {
         total,
         pages: Math.ceil(total / parseInt(limit))
       }
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// @route   GET /api/reviews/user/my-reviews
-// @desc    Get current user's reviews
-// @access  Private
-router.get('/user/my-reviews', auth, async (req, res) => {
-  try {
-    const reviews = await Review.find({ user: req.user._id })
-      .populate('movie', 'title poster')
-      .sort({ createdAt: -1 });
-
-    res.json({
-      success: true,
-      data: reviews
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
@@ -215,25 +234,6 @@ router.put('/:id/approve', auth, admin, async (req, res) => {
     res.json({
       success: true,
       data: review
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// @route   GET /api/reviews/pending
-// @desc    Get pending reviews (Admin only)
-// @access  Private/Admin
-router.get('/pending', auth, admin, async (req, res) => {
-  try {
-    const reviews = await Review.find({ isApproved: false })
-      .populate('user', 'username')
-      .populate('movie', 'title')
-      .sort({ createdAt: -1 });
-
-    res.json({
-      success: true,
-      data: reviews
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
