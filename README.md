@@ -10,6 +10,7 @@ A RESTful API for a movie streaming platform built with Node.js, Express.js, and
 - **Recommendations**: Basic recommendation system based on user behavior
 - **Error Handling**: Centralized error handling middleware
 - **Validation**: Input validation using express-validator
+- **Security**: Helmet.js for HTTP headers, rate limiting, input validation
 
 ## Tech Stack
 
@@ -17,7 +18,7 @@ A RESTful API for a movie streaming platform built with Node.js, Express.js, and
 - **Database**: MongoDB with Mongoose ODM
 - **Authentication**: JWT (JSON Web Tokens)
 - **Validation**: express-validator
-- **Security**: bcryptjs for password hashing
+- **Security**: bcryptjs, helmet.js, express-rate-limit
 
 ## Installation
 
@@ -187,9 +188,21 @@ This project follows the **MVC (Model-View-Controller) pattern**:
 - **Models**: Database schemas (User, Movie, Review)
 - **Controllers**: Business logic for each feature
 - **Routes**: API endpoints and routing
-- **Middleware**: Authentication, authorization, error handling
+- **Middleware**: Authentication, authorization, error handling, rate limiting
 - **Utils**: Helper functions and utilities
 - **Validations**: Input validation schemas
+
+## Security
+
+This API includes multiple security layers:
+- **Helmet.js**: HTTP headers protection
+- **Rate Limiting**: Prevents brute force and abuse
+- **Input Validation**: Sanitizes all user inputs
+- **Password Hashing**: bcryptjs for secure password storage
+- **JWT Authentication**: Secure token-based auth
+- **CORS**: Controlled cross-origin requests
+
+See [SECURITY.md](./SECURITY.md) for detailed security information.
 
 ## Next Steps
 

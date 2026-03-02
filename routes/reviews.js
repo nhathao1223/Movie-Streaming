@@ -1,6 +1,7 @@
 const express = require('express');
 const reviewController = require('../controllers/review.controller');
 const { createReviewValidation, updateReviewValidation, validate } = require('../validations/review.validation');
+const { createLimiter } = require('../middleware/rateLimiter');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 
@@ -126,7 +127,7 @@ const router = express.Router();
  *         description: Review approved
  */
 
-router.post('/', auth, createReviewValidation, validate, reviewController.create);
+router.post('/', createLimiter, auth, createReviewValidation, validate, reviewController.create);
 router.get('/user/my-reviews', auth, reviewController.getMyReviews);
 router.get('/pending', auth, admin, reviewController.getPending);
 router.get('/movie/:movieId', reviewController.getByMovie);

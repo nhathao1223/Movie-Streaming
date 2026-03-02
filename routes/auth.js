@@ -1,6 +1,7 @@
 const express = require('express');
 const authController = require('../controllers/auth.controller');
 const { registerValidation, loginValidation, validate } = require('../validations/auth.validation');
+const { authLimiter } = require('../middleware/rateLimiter');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
@@ -71,8 +72,8 @@ const router = express.Router();
  *         description: Current user info
  */
 
-router.post('/register', registerValidation, validate, authController.register);
-router.post('/login', loginValidation, validate, authController.login);
+router.post('/register', authLimiter, registerValidation, validate, authController.register);
+router.post('/login', authLimiter, loginValidation, validate, authController.login);
 router.get('/me', auth, authController.getMe);
 
 module.exports = router;

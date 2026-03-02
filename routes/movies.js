@@ -1,6 +1,7 @@
 const express = require('express');
 const movieController = require('../controllers/movie.controller');
 const { createMovieValidation, updateMovieValidation, validate } = require('../validations/movie.validation');
+const { createLimiter } = require('../middleware/rateLimiter');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 
@@ -222,7 +223,7 @@ router.get('/popular', movieController.getPopular);
 router.get('/trending', movieController.getTrending);
 router.get('/top-rated', movieController.getTopRated);
 router.get('/', movieController.getAll);
-router.post('/', auth, admin, createMovieValidation, validate, movieController.create);
+router.post('/', createLimiter, auth, admin, createMovieValidation, validate, movieController.create);
 router.get('/:id', movieController.getById);
 router.put('/:id', auth, admin, updateMovieValidation, validate, movieController.update);
 router.delete('/:id', auth, admin, movieController.delete);
