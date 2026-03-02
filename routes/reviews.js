@@ -8,6 +8,184 @@ const admin = require('../middleware/admin');
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /api/reviews:
+ *   post:
+ *     summary: Create a review for a movie
+ *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - movieId
+ *               - rating
+ *               - title
+ *               - comment
+ *             properties:
+ *               movieId:
+ *                 type: string
+ *               rating:
+ *                 type: integer
+ *                 minimum: 1
+ *                 maximum: 5
+ *               title:
+ *                 type: string
+ *               comment:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Review created successfully
+ *       400:
+ *         description: Validation error or user already reviewed
+ *       404:
+ *         description: Movie not found
+ */
+
+/**
+ * @swagger
+ * /api/reviews/user/my-reviews:
+ *   get:
+ *     summary: Get current user's reviews
+ *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User's reviews
+ *       401:
+ *         description: Unauthorized
+ */
+
+/**
+ * @swagger
+ * /api/reviews/pending:
+ *   get:
+ *     summary: Get pending reviews (Admin only)
+ *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Pending reviews
+ *       403:
+ *         description: Forbidden (Admin only)
+ */
+
+/**
+ * @swagger
+ * /api/reviews/movie/{movieId}:
+ *   get:
+ *     summary: Get all reviews for a movie
+ *     tags: [Reviews]
+ *     parameters:
+ *       - in: path
+ *         name: movieId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           default: createdAt
+ *     responses:
+ *       200:
+ *         description: Movie reviews with stats
+ */
+
+/**
+ * @swagger
+ * /api/reviews/{id}:
+ *   put:
+ *     summary: Update a review
+ *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rating:
+ *                 type: integer
+ *                 minimum: 1
+ *                 maximum: 5
+ *               title:
+ *                 type: string
+ *               comment:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Review updated successfully
+ *       403:
+ *         description: Not authorized
+ *       404:
+ *         description: Review not found
+ *   delete:
+ *     summary: Delete a review
+ *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Review deleted
+ *       403:
+ *         description: Not authorized
+ *       404:
+ *         description: Review not found
+ */
+
+/**
+ * @swagger
+ * /api/reviews/{id}/approve:
+ *   put:
+ *     summary: Approve a review (Admin only)
+ *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Review approved
+ *       403:
+ *         description: Forbidden (Admin only)
+ */
+
 // @route   POST /api/reviews
 // @desc    Create a review for a movie
 // @access  Private

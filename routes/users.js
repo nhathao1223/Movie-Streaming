@@ -5,6 +5,127 @@ const auth = require('../middleware/auth');
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /api/users/profile:
+ *   get:
+ *     summary: Get user profile with stats
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User profile with statistics
+ *       401:
+ *         description: Unauthorized
+ */
+
+/**
+ * @swagger
+ * /api/users/watch-history:
+ *   get:
+ *     summary: Get user's watch history
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User's watch history
+ *       401:
+ *         description: Unauthorized
+ *   post:
+ *     summary: Add movie to watch history
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - movieId
+ *             properties:
+ *               movieId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Added to watch history
+ *       404:
+ *         description: Movie not found
+ */
+
+/**
+ * @swagger
+ * /api/users/watch-history/{movieId}:
+ *   delete:
+ *     summary: Remove movie from watch history
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: movieId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Removed from watch history
+ */
+
+/**
+ * @swagger
+ * /api/users/favorites:
+ *   get:
+ *     summary: Get user's favorite movies
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User's favorite movies
+ *       401:
+ *         description: Unauthorized
+ *   post:
+ *     summary: Add/remove movie from favorites
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - movieId
+ *             properties:
+ *               movieId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Added/removed from favorites
+ *       404:
+ *         description: Movie not found
+ */
+
+/**
+ * @swagger
+ * /api/users/recommendations:
+ *   get:
+ *     summary: Get personalized movie recommendations
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Personalized recommendations
+ *       401:
+ *         description: Unauthorized
+ */
+
 // @route   POST /api/users/watch-history
 // @desc    Add movie to watch history
 // @access  Private

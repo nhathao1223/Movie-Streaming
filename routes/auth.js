@@ -6,6 +6,114 @@ const auth = require('../middleware/auth');
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: john_doe
+ *               email:
+ *                 type: string
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 token:
+ *                   type: string
+ *                 user:
+ *                   type: object
+ *       400:
+ *         description: Validation error or user already exists
+ */
+
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 token:
+ *                   type: string
+ *                 user:
+ *                   type: object
+ *       400:
+ *         description: Invalid credentials
+ */
+
+/**
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     summary: Get current user info
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Current user info
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized
+ */
+
 // Generate JWT Token
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {

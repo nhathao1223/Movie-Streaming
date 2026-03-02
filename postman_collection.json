@@ -1,0 +1,734 @@
+{
+  "info": {
+    "name": "Movie Streaming API",
+    "description": "Complete API collection for Movie Streaming Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/auth/me",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Movies - Special Routes",
+      "item": [
+        {
+          "name": "Get Movie Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/movies/stats",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "movies", "stats"]
+            }
+          }
+        },
+        {
+          "name": "Get Popular Movies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/movies/popular?limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "movies", "popular"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Trending Movies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/movies/trending?limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "movies", "trending"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Top Rated Movies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/movies/top-rated?limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "movies", "top-rated"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Movies - CRUD",
+      "item": [
+        {
+          "name": "Get All Movies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/movies?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "movies"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Movies by Title",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/movies?search=action&page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "movies"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "action"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter by Genre",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/movies?genre=Action&minRating=8&sortBy=rating&sortOrder=desc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "movies"],
+              "query": [
+                {
+                  "key": "genre",
+                  "value": "Action"
+                },
+                {
+                  "key": "minRating",
+                  "value": "8"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "rating"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter by Director",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/movies?director=nolan&minDuration=120&maxDuration=180",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "movies"],
+              "query": [
+                {
+                  "key": "director",
+                  "value": "nolan"
+                },
+                {
+                  "key": "minDuration",
+                  "value": "120"
+                },
+                {
+                  "key": "maxDuration",
+                  "value": "180"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Single Movie",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/movies/{{movieId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "movies", "{{movieId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Movie (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Movie\",\n  \"description\": \"An amazing new movie\",\n  \"genre\": [\"Action\", \"Thriller\"],\n  \"releaseYear\": 2024,\n  \"director\": \"John Doe\",\n  \"duration\": 150,\n  \"rating\": 8.5,\n  \"poster\": \"https://example.com/poster.jpg\",\n  \"trailer\": \"https://example.com/trailer.mp4\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/movies",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "movies"]
+            }
+          }
+        },
+        {
+          "name": "Update Movie (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 9.0,\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/movies/{{movieId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "movies", "{{movieId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Movie (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/movies/{{movieId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "movies", "{{movieId}}"]
+            }
+          }
+        },
+        {
+          "name": "Increment View Count",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/movies/{{movieId}}/view",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "movies", "{{movieId}}", "view"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Create Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movieId\": \"{{movieId}}\",\n  \"rating\": 5,\n  \"title\": \"Amazing Movie!\",\n  \"comment\": \"This is an absolutely fantastic movie with great storyline and excellent acting performances\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/reviews",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "reviews"]
+            }
+          }
+        },
+        {
+          "name": "Get Reviews for Movie",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/reviews/movie/{{movieId}}?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "reviews", "movie", "{{movieId}}"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get My Reviews",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/reviews/user/my-reviews",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "reviews", "user", "my-reviews"]
+            }
+          }
+        },
+        {
+          "name": "Get Pending Reviews (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/reviews/pending",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "reviews", "pending"]
+            }
+          }
+        },
+        {
+          "name": "Update Review",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4,\n  \"comment\": \"Updated review comment\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/reviews/{{reviewId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "reviews", "{{reviewId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Review",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/reviews/{{reviewId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "reviews", "{{reviewId}}"]
+            }
+          }
+        },
+        {
+          "name": "Approve Review (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/reviews/{{reviewId}}/approve",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "reviews", "{{reviewId}}", "approve"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Features",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/users/profile",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "users", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Add to Watch History",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movieId\": \"{{movieId}}\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/users/watch-history",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "users", "watch-history"]
+            }
+          }
+        },
+        {
+          "name": "Get Watch History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/users/watch-history",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "users", "watch-history"]
+            }
+          }
+        },
+        {
+          "name": "Remove from Watch History",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/users/watch-history/{{movieId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "users", "watch-history", "{{movieId}}"]
+            }
+          }
+        },
+        {
+          "name": "Add to Favorites",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movieId\": \"{{movieId}}\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/users/favorites",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "users", "favorites"]
+            }
+          }
+        },
+        {
+          "name": "Get Favorites",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/users/favorites",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "users", "favorites"]
+            }
+          }
+        },
+        {
+          "name": "Get Recommendations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/users/recommendations",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "users", "recommendations"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "movieId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "reviewId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

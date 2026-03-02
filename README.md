@@ -122,6 +122,18 @@ Include JWT token in the Authorization header:
 Authorization: Bearer <your-jwt-token>
 ```
 
+## Testing with Swagger UI
+
+1. Start the server: `npm run dev`
+2. Open your browser and go to: `http://localhost:5000`
+3. Click on "Swagger UI" button
+4. Register a new user: `POST /api/auth/register`
+5. Login to get JWT token: `POST /api/auth/login`
+6. Click "Authorize" button and paste your token
+7. Test all endpoints interactively
+
+See [SWAGGER_GUIDE.md](./SWAGGER_GUIDE.md) for detailed Swagger usage instructions.
+
 ## Testing with Postman
 
 1. Register a new user: `POST /api/auth/register`
