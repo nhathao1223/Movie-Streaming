@@ -39,7 +39,11 @@ const reviewSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Prevent duplicate reviews from same user for same movie
+// Indexes for performance
 reviewSchema.index({ movie: 1, user: 1 }, { unique: true });
+reviewSchema.index({ movie: 1, isApproved: 1 });
+reviewSchema.index({ user: 1 });
+reviewSchema.index({ rating: 1 });
+reviewSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('Review', reviewSchema);

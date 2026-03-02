@@ -55,7 +55,14 @@ const movieSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Index for search functionality
+// Indexes for performance
 movieSchema.index({ title: 'text', description: 'text', genre: 'text' });
+movieSchema.index({ genre: 1 });
+movieSchema.index({ releaseYear: 1 });
+movieSchema.index({ rating: -1 });
+movieSchema.index({ viewCount: -1 });
+movieSchema.index({ director: 1 });
+movieSchema.index({ isActive: 1 });
+movieSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('Movie', movieSchema);

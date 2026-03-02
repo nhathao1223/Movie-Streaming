@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 require('dotenv').config();
@@ -22,6 +23,7 @@ connectDB();
 
 // Security middleware
 app.use(helmet()); // Set security HTTP headers
+app.use(mongoSanitize()); // Prevent NoSQL injection
 
 // Middleware
 app.use(cors());

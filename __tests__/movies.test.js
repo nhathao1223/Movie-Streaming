@@ -1,0 +1,152 @@
+const request = require('supertest');
+const mongoose = require('mongoose');
+const express = require('express');
+const movieRoutes = require('../routes/movies');
+const Movie = require('../models/Movie');
+const errorHandler = require('../middleware/errorHandler');
+
+// Create test app
+const app = express();
+app.use(express.json());
+app.use('/api/movies', movieRoutes);
+app.use(errorHandler);
+
+// Test data
+const testMovie = {
+  title: 'Test Movie',
+  description: 'A test movie description',
+  genre: ['Action', 'Drama'],
+  director: 'Test Director',
+  releaseYear: 2024,
+  duration: 120,
+  rating: 8.5
+};
+
+describe('Movie Routes', () => {
+  beforeAll(async () => {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/movie-streaming-test');
+  });
+
+  afterAll(async () => {
+    await Movie.deleteMany({});
+    await mongoose.disconnect();
+  });
+
+  afterEach(async () => {
+    await Movie.deleteMany({});
+  });
+
+  describe('GET /api/movies', () => {
+    beforeEach(async () => {
+      await Movie.create(testMovie);
+      await Movie.create({
+        ...testMovie,
+        title: 'Another Movie',
+        genre: ['Comedy']
+      });
+    });
+
+    it('should get all movies', async () => {
+      const res = await request(app)
+        .get('/api/movies');
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.movies.length).toBeGreaterThan(0);
+    });
+
+    it('should filter movies by genre', async () => {
+      const res = await request(app)
+        .get('/api/movies?genre=Action');
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.data.movies.length).toBeGreaterThan(0);
+      expect(res.body.data.movies[0].genre).toContain('Action');
+    });
+
+    it('should search movies', async () => {
+      const res = await request(app)
+        .get('/api/movies?search=Test');
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.data.movies.length).toBeGreaterThan(0);
+    });
+
+    it('should paginate movies', async () => {
+      const res = await request(app)
+        .get('/api/movies?page=1&limit=1');
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.data.movies.length).toBe(1);
+      expect(res.body.data.pagination.page).toBe(1);
+      expect(res.body.data.pagination.limit).toBe(1);
+    });
+  });
+
+  describe('GET /api/movies/popular', () => {
+    beforeEach(async () => {
+      await Movie.create({ ...testMovie, viewCount: 100 });
+      await Movie.create({ ...testMovie, title: 'Less Popular', viewCount: 10 });
+    });
+
+    it('should get popular movies sorted by views', async () => {
+      const res = await request(app)
+        .get('/api/movies/popular');
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data[0].viewCount).toBeGreaterThanOrEqual(res.body.data[1].viewCount);
+    });
+  });
+
+  describe('GET /api/movies/stats', () => {
+    beforeEach(async () => {
+      await Movie.create(testMovie);
+    });
+
+    it('should get movie statistics', async () => {
+      const res = await request(app)
+        .get('/api/movies/stats');
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.totalMovies).toBeGreaterThan(0);
+      expect(res.body.data.genreDistribution).toBeDefined();
+    });
+  });
+
+  describe('GET /api/movies/:id', () => {
+    let movieId;
+
+    beforeEach(async () => {
+      const movie = await Movie.create(testMovie);
+      movieId = movie._id;
+    });
+
+    it('should get a single movie', async () => {
+      const res = await request(app)
+        .get(`/api/movies/${movieId}`);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.title).toBe(testMovie.title);
+    });
+
+    it('should return 404 for non-existent movie', async () => {
+      const fakeId = new mongoose.Types.ObjectId();
+      const res = await request(app)
+        .get(`/api/movies/${fakeId}`);
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body.success).toBe(false);
+    });
+
+    it('should return 400 for invalid ID format', async () => {
+      const res = await request(app)
+        .get('/api/movies/invalid-id');
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.error.code).toBe('INVALID_ID');
+    });
+  });
+});

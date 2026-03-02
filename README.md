@@ -214,6 +214,23 @@ Structured logging with Winston:
 
 See [LOGGING.md](./LOGGING.md) for logging documentation.
 
+## Testing
+
+Comprehensive test suite with Jest and Supertest:
+- **16+ test cases** covering authentication and movies
+- **Unit tests** for critical paths
+- **Integration tests** for API endpoints
+- **Error handling** validation
+
+Run tests:
+```bash
+npm test              # Run all tests
+npm run test:watch   # Watch mode
+npm run test:coverage # Coverage report
+```
+
+See [TIER1_IMPROVEMENTS.md](./TIER1_IMPROVEMENTS.md) for details.
+
 ## Next Steps
 
 - Add admin role and permissions
