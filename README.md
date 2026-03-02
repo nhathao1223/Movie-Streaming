@@ -145,20 +145,51 @@ See [SWAGGER_GUIDE.md](./SWAGGER_GUIDE.md) for detailed Swagger usage instructio
 ## Project Structure
 
 ```
-├── models/
-│   ├── User.js          # User model
-│   └── Movie.js         # Movie model
-├── routes/
-│   ├── auth.js          # Authentication routes
-│   ├── movies.js        # Movie routes
-│   └── users.js         # User feature routes
+├── config/
+│   └── db.js                    # Database connection
+├── controllers/
+│   ├── auth.controller.js       # Authentication logic
+│   ├── movie.controller.js      # Movie operations
+│   ├── user.controller.js       # User features
+│   └── review.controller.js     # Review management
 ├── middleware/
-│   ├── auth.js          # JWT authentication middleware
-│   └── errorHandler.js  # Error handling middleware
-├── server.js            # Main server file
-├── package.json
-└── README.md
+│   ├── auth.js                  # JWT authentication
+│   ├── admin.js                 # Admin authorization
+│   └── errorHandler.js          # Error handling
+├── models/
+│   ├── User.js
+│   ├── Movie.js
+│   └── Review.js
+├── routes/
+│   ├── auth.js
+│   ├── movies.js
+│   ├── users.js
+│   └── reviews.js
+├── utils/
+│   ├── response.js              # Response helpers
+│   └── generateToken.js         # Token generation
+├── validations/
+│   ├── auth.validation.js
+│   ├── movie.validation.js
+│   └── review.validation.js
+├── scripts/
+│   ├── seedData.js
+│   └── createAdmin.js
+├── server.js
+├── swagger.js
+└── package.json
 ```
+
+## Architecture
+
+This project follows the **MVC (Model-View-Controller) pattern**:
+
+- **Models**: Database schemas (User, Movie, Review)
+- **Controllers**: Business logic for each feature
+- **Routes**: API endpoints and routing
+- **Middleware**: Authentication, authorization, error handling
+- **Utils**: Helper functions and utilities
+- **Validations**: Input validation schemas
 
 ## Next Steps
 
