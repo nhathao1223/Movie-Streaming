@@ -1,14 +1,14 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 const express = require('express');
-const movieRoutes = require('../routes/movies');
+const movieRoutes = require('../routes/v1/movies');
 const Movie = require('../models/Movie');
 const errorHandler = require('../middleware/errorHandler');
 
 // Create test app
 const app = express();
 app.use(express.json());
-app.use('/api/movies', movieRoutes);
+app.use('/api/v1/movies', movieRoutes);
 app.use(errorHandler);
 
 // Test data
@@ -36,7 +36,7 @@ describe('Movie Routes', () => {
     await Movie.deleteMany({});
   });
 
-  describe('GET /api/movies', () => {
+  describe('GET /api/v1/movies', () => {
     beforeEach(async () => {
       await Movie.create(testMovie);
       await Movie.create({
@@ -48,7 +48,7 @@ describe('Movie Routes', () => {
 
     it('should get all movies', async () => {
       const res = await request(app)
-        .get('/api/movies');
+        .get('/api/v1/movies');
 
       expect(res.statusCode).toBe(200);
       expect(res.body.success).toBe(true);
@@ -57,7 +57,7 @@ describe('Movie Routes', () => {
 
     it('should filter movies by genre', async () => {
       const res = await request(app)
-        .get('/api/movies?genre=Action');
+        .get('/api/v1/movies?genre=Action');
 
       expect(res.statusCode).toBe(200);
       expect(res.body.data.movies.length).toBeGreaterThan(0);
@@ -66,7 +66,7 @@ describe('Movie Routes', () => {
 
     it('should search movies', async () => {
       const res = await request(app)
-        .get('/api/movies?search=Test');
+        .get('/api/v1/movies?search=Test');
 
       expect(res.statusCode).toBe(200);
       expect(res.body.data.movies.length).toBeGreaterThan(0);
@@ -74,7 +74,7 @@ describe('Movie Routes', () => {
 
     it('should paginate movies', async () => {
       const res = await request(app)
-        .get('/api/movies?page=1&limit=1');
+        .get('/api/v1/movies?page=1&limit=1');
 
       expect(res.statusCode).toBe(200);
       expect(res.body.data.movies.length).toBe(1);
@@ -83,7 +83,7 @@ describe('Movie Routes', () => {
     });
   });
 
-  describe('GET /api/movies/popular', () => {
+  describe('GET /api/v1/movies/popular', () => {
     beforeEach(async () => {
       await Movie.create({ ...testMovie, viewCount: 100 });
       await Movie.create({ ...testMovie, title: 'Less Popular', viewCount: 10 });
@@ -91,7 +91,7 @@ describe('Movie Routes', () => {
 
     it('should get popular movies sorted by views', async () => {
       const res = await request(app)
-        .get('/api/movies/popular');
+        .get('/api/v1/movies/popular');
 
       expect(res.statusCode).toBe(200);
       expect(res.body.success).toBe(true);
@@ -99,14 +99,14 @@ describe('Movie Routes', () => {
     });
   });
 
-  describe('GET /api/movies/stats', () => {
+  describe('GET /api/v1/movies/stats', () => {
     beforeEach(async () => {
       await Movie.create(testMovie);
     });
 
     it('should get movie statistics', async () => {
       const res = await request(app)
-        .get('/api/movies/stats');
+        .get('/api/v1/movies/stats');
 
       expect(res.statusCode).toBe(200);
       expect(res.body.success).toBe(true);
@@ -115,7 +115,7 @@ describe('Movie Routes', () => {
     });
   });
 
-  describe('GET /api/movies/:id', () => {
+  describe('GET /api/v1/movies/:id', () => {
     let movieId;
 
     beforeEach(async () => {
@@ -125,7 +125,7 @@ describe('Movie Routes', () => {
 
     it('should get a single movie', async () => {
       const res = await request(app)
-        .get(`/api/movies/${movieId}`);
+        .get(`/api/v1/movies/${movieId}`);
 
       expect(res.statusCode).toBe(200);
       expect(res.body.success).toBe(true);
@@ -135,7 +135,7 @@ describe('Movie Routes', () => {
     it('should return 404 for non-existent movie', async () => {
       const fakeId = new mongoose.Types.ObjectId();
       const res = await request(app)
-        .get(`/api/movies/${fakeId}`);
+        .get(`/api/v1/movies/${fakeId}`);
 
       expect(res.statusCode).toBe(404);
       expect(res.body.success).toBe(false);
@@ -143,7 +143,7 @@ describe('Movie Routes', () => {
 
     it('should return 400 for invalid ID format', async () => {
       const res = await request(app)
-        .get('/api/movies/invalid-id');
+        .get('/api/v1/movies/invalid-id');
 
       expect(res.statusCode).toBe(400);
       expect(res.body.error.code).toBe('INVALID_ID');

@@ -1,14 +1,14 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 const express = require('express');
-const authRoutes = require('../routes/auth');
+const authRoutes = require('../routes/v1/auth');
 const User = require('../models/User');
 const errorHandler = require('../middleware/errorHandler');
 
 // Create test app
 const app = express();
 app.use(express.json());
-app.use('/api/auth', authRoutes);
+app.use('/api/v1/auth', authRoutes);
 app.use(errorHandler);
 
 // Test data
@@ -34,10 +34,10 @@ describe('Authentication Routes', () => {
     await User.deleteMany({});
   });
 
-  describe('POST /api/auth/register', () => {
+  describe('POST /api/v1/auth/register', () => {
     it('should register a new user', async () => {
       const res = await request(app)
-        .post('/api/auth/register')
+        .post('/api/v1/auth/register')
         .send(testUser);
 
       expect(res.statusCode).toBe(201);
@@ -48,11 +48,11 @@ describe('Authentication Routes', () => {
 
     it('should fail with duplicate email', async () => {
       await request(app)
-        .post('/api/auth/register')
+        .post('/api/v1/auth/register')
         .send(testUser);
 
       const res = await request(app)
-        .post('/api/auth/register')
+        .post('/api/v1/auth/register')
         .send(testUser);
 
       expect(res.statusCode).toBe(400);
@@ -62,7 +62,7 @@ describe('Authentication Routes', () => {
 
     it('should fail with invalid email', async () => {
       const res = await request(app)
-        .post('/api/auth/register')
+        .post('/api/v1/auth/register')
         .send({
           username: 'testuser',
           email: 'invalid-email',
@@ -75,7 +75,7 @@ describe('Authentication Routes', () => {
 
     it('should fail with short password', async () => {
       const res = await request(app)
-        .post('/api/auth/register')
+        .post('/api/v1/auth/register')
         .send({
           username: 'testuser',
           email: 'test@example.com',
@@ -87,16 +87,16 @@ describe('Authentication Routes', () => {
     });
   });
 
-  describe('POST /api/auth/login', () => {
+  describe('POST /api/v1/auth/login', () => {
     beforeEach(async () => {
       await request(app)
-        .post('/api/auth/register')
+        .post('/api/v1/auth/register')
         .send(testUser);
     });
 
     it('should login with correct credentials', async () => {
       const res = await request(app)
-        .post('/api/auth/login')
+        .post('/api/v1/auth/login')
         .send({
           email: testUser.email,
           password: testUser.password
@@ -110,7 +110,7 @@ describe('Authentication Routes', () => {
 
     it('should fail with wrong password', async () => {
       const res = await request(app)
-        .post('/api/auth/login')
+        .post('/api/v1/auth/login')
         .send({
           email: testUser.email,
           password: 'wrongpassword'
@@ -123,7 +123,7 @@ describe('Authentication Routes', () => {
 
     it('should fail with non-existent email', async () => {
       const res = await request(app)
-        .post('/api/auth/login')
+        .post('/api/v1/auth/login')
         .send({
           email: 'nonexistent@example.com',
           password: testUser.password

@@ -14,11 +14,11 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:5000',
+        url: 'http://localhost:5000/api/v1',
         description: 'Development server'
       },
       {
-        url: 'https://api.moviestreaming.com',
+        url: 'https://api.moviestreaming.com/api/v1',
         description: 'Production server'
       }
     ],

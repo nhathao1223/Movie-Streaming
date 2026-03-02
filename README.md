@@ -62,40 +62,45 @@ npm start
 
 ## API Endpoints
 
+### Base URL
+```
+http://localhost:5000/api/v1
+```
+
 ### Authentication
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/me` - Get current user info (Protected)
+- `POST /auth/register` - Register a new user
+- `POST /auth/login` - Login user
+- `GET /auth/me` - Get current user info (Protected)
 
 ### Movies
-- `GET /api/movies` - Get all movies (with search, filter, sort, pagination)
-- `GET /api/movies/popular` - Get popular movies (most viewed)
-- `GET /api/movies/trending` - Get trending movies (last 7 days)
-- `GET /api/movies/top-rated` - Get top rated movies
-- `GET /api/movies/stats` - Get movie statistics
-- `GET /api/movies/:id` - Get single movie
-- `POST /api/movies` - Create new movie (Protected)
-- `PUT /api/movies/:id` - Update movie (Protected)
-- `DELETE /api/movies/:id` - Delete movie (Protected)
-- `PUT /api/movies/:id/view` - Increment view count (Protected)
+- `GET /movies` - Get all movies (with search, filter, sort, pagination)
+- `GET /movies/popular` - Get popular movies (most viewed)
+- `GET /movies/trending` - Get trending movies (last 7 days)
+- `GET /movies/top-rated` - Get top rated movies
+- `GET /movies/stats` - Get movie statistics
+- `GET /movies/:id` - Get single movie
+- `POST /movies` - Create new movie (Protected)
+- `PUT /movies/:id` - Update movie (Protected)
+- `DELETE /movies/:id` - Delete movie (Protected)
+- `PUT /movies/:id/view` - Increment view count (Protected)
 
 ### User Features
-- `GET /api/users/profile` - Get user profile with stats (Protected)
-- `POST /api/users/watch-history` - Add movie to watch history (Protected)
-- `GET /api/users/watch-history` - Get user's watch history (Protected)
-- `DELETE /api/users/watch-history/:movieId` - Remove from watch history (Protected)
-- `POST /api/users/favorites` - Add/remove movie from favorites (Protected)
-- `GET /api/users/favorites` - Get user's favorite movies (Protected)
-- `GET /api/users/recommendations` - Get personalized recommendations (Protected)
+- `GET /users/profile` - Get user profile with stats (Protected)
+- `POST /users/watch-history` - Add movie to watch history (Protected)
+- `GET /users/watch-history` - Get user's watch history (Protected)
+- `DELETE /users/watch-history/:movieId` - Remove from watch history (Protected)
+- `POST /users/favorites` - Add/remove movie from favorites (Protected)
+- `GET /users/favorites` - Get user's favorite movies (Protected)
+- `GET /users/recommendations` - Get personalized recommendations (Protected)
 
 ### Reviews
-- `POST /api/reviews` - Create a review (Protected)
-- `GET /api/reviews/movie/:movieId` - Get reviews for a movie (Public)
-- `GET /api/reviews/user/my-reviews` - Get current user's reviews (Protected)
-- `PUT /api/reviews/:id` - Update a review (Protected)
-- `DELETE /api/reviews/:id` - Delete a review (Protected)
-- `PUT /api/reviews/:id/approve` - Approve review (Protected/Admin)
-- `GET /api/reviews/pending` - Get pending reviews (Protected/Admin)
+- `POST /reviews` - Create a review (Protected)
+- `GET /reviews/movie/:movieId` - Get reviews for a movie (Public)
+- `GET /reviews/user/my-reviews` - Get current user's reviews (Protected)
+- `PUT /reviews/:id` - Update a review (Protected)
+- `DELETE /reviews/:id` - Delete a review (Protected)
+- `PUT /reviews/:id/approve` - Approve review (Protected/Admin)
+- `GET /reviews/pending` - Get pending reviews (Protected/Admin)
 
 ## Advanced Query Parameters for Movies
 
@@ -110,11 +115,11 @@ npm start
 - `sortBy` - Sort field (default: createdAt)
 - `sortOrder` - Sort order: asc/desc (default: desc)
 - `page` - Page number (default: 1)
-- `limit` - Items per page (default: 10)
+- `limit` - Items per page (default: 10, max: 100)
 
 Examples:
-- `GET /api/movies?search=action&genre=Action&minRating=8&sortBy=rating&sortOrder=desc`
-- `GET /api/movies?director=nolan&minDuration=120&maxDuration=180`
+- `GET /api/v1/movies?search=action&genre=Action&minRating=8&sortBy=rating&sortOrder=desc`
+- `GET /api/v1/movies?director=nolan&minDuration=120&maxDuration=180`
 
 ## Authentication
 
@@ -122,6 +127,15 @@ Include JWT token in the Authorization header:
 ```
 Authorization: Bearer <your-jwt-token>
 ```
+
+## API Versioning
+
+This API uses versioning to ensure backward compatibility:
+- Current version: **v1** (`/api/v1/`)
+- All endpoints are prefixed with `/api/v1/`
+- Future versions will be available at `/api/v2/`, etc.
+
+This allows us to introduce breaking changes in new versions without affecting existing clients.
 
 ## Testing with Swagger UI
 

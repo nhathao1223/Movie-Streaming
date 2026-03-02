@@ -10,10 +10,10 @@ const connectDB = require('./config/db');
 const logger = require('./config/logger');
 const { httpLogger, errorLogger } = require('./middleware/logger');
 const { apiLimiter } = require('./middleware/rateLimiter');
-const authRoutes = require('./routes/auth');
-const movieRoutes = require('./routes/movies');
-const userRoutes = require('./routes/users');
-const reviewRoutes = require('./routes/reviews');
+const authRoutes = require('./routes/v1/auth');
+const movieRoutes = require('./routes/v1/movies');
+const userRoutes = require('./routes/v1/users');
+const reviewRoutes = require('./routes/v1/reviews');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -44,10 +44,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 }));
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/movies', movieRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/reviews', reviewRoutes);
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/movies', movieRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/reviews', reviewRoutes);
 
 // Error logging middleware
 app.use(errorLogger);
