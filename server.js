@@ -6,6 +6,8 @@ const swaggerSpec = require('./swagger');
 require('dotenv').config();
 
 const connectDB = require('./config/db');
+const logger = require('./config/logger');
+const { httpLogger, errorLogger } = require('./middleware/logger');
 const { apiLimiter } = require('./middleware/rateLimiter');
 const authRoutes = require('./routes/auth');
 const movieRoutes = require('./routes/movies');
@@ -26,6 +28,9 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' })); // Limit request body size
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
+// Logging middleware
+app.use(httpLogger);
+
 // Rate limiting
 app.use('/api/', apiLimiter); // Apply rate limiter to all API routes
 
@@ -42,10 +47,13 @@ app.use('/api/movies', movieRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/reviews', reviewRoutes);
 
+// Error logging middleware
+app.use(errorLogger);
+
 // Error handling middleware
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  logger.info(`Server running on port ${PORT}`);
 });

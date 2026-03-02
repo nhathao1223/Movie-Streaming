@@ -204,6 +204,16 @@ This API includes multiple security layers:
 
 See [SECURITY.md](./SECURITY.md) for detailed security information.
 
+## Logging
+
+Structured logging with Winston:
+- **Multiple log levels**: error, warn, info, http, debug
+- **File logging**: Separate error and combined logs
+- **Console output**: Colored real-time logs
+- **Error tracking**: Detailed error context and stack traces
+
+See [LOGGING.md](./LOGGING.md) for logging documentation.
+
 ## Next Steps
 
 - Add admin role and permissions

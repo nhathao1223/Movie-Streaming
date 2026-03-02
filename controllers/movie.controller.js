@@ -1,8 +1,10 @@
 const Movie = require('../models/Movie');
 const { sendSuccess, sendError } = require('../utils/response');
+const logger = require('../config/logger');
 
 exports.getStats = async (req, res) => {
   try {
+    logger.debug('Fetching movie statistics');
     const totalMovies = await Movie.countDocuments({ isActive: true });
     const totalViews = await Movie.aggregate([
       { $match: { isActive: true } },
@@ -22,6 +24,61 @@ exports.getStats = async (req, res) => {
       genreDistribution: genreStats
     });
   } catch (error) {
+    logger.error(`Get stats error: ${error.message}`);
+    sendError(res, 'Server error', 500);
+  }
+};
+
+exports.create = async (req, res) => {
+  try {
+    const movie = new Movie(req.body);
+    await movie.save();
+    logger.info(`Movie created: ${movie._id} - ${movie.title}`);
+    sendSuccess(res, movie, 'Movie created', 201);
+  } catch (error) {
+    logger.error(`Create movie error: ${error.message}`);
+    sendError(res, 'Server error', 500);
+  }
+};
+
+exports.update = async (req, res) => {
+  try {
+    const movie = await Movie.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!movie) {
+      logger.warn(`Update movie failed: Movie not found - ${req.params.id}`);
+      return sendError(res, 'Movie not found', 404);
+    }
+
+    logger.info(`Movie updated: ${movie._id}`);
+    sendSuccess(res, movie, 'Movie updated');
+  } catch (error) {
+    logger.error(`Update movie error: ${error.message}`);
+    sendError(res, 'Server error', 500);
+  }
+};
+
+exports.delete = async (req, res) => {
+  try {
+    const movie = await Movie.findByIdAndUpdate(
+      req.params.id,
+      { isActive: false },
+      { new: true }
+    );
+
+    if (!movie) {
+      logger.warn(`Delete movie failed: Movie not found - ${req.params.id}`);
+      return sendError(res, 'Movie not found', 404);
+    }
+
+    logger.info(`Movie deleted: ${movie._id}`);
+    sendSuccess(res, null, 'Movie deleted');
+  } catch (error) {
+    logger.error(`Delete movie error: ${error.message}`);
     sendError(res, 'Server error', 500);
   }
 };
