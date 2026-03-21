@@ -200,3 +200,59 @@ Parameters:
 3. Register a user and get a token
 4. Authorize with your token
 5. Start testing the API
+## 🚨 Troubleshooting Common Issues
+
+### Problem: 401 Unauthorized on Protected APIs
+
+**Root Cause**: APIs require authentication but no token is set.
+
+**Solution**:
+1. **Login first**: Use POST /api/v1/auth/login with credentials:
+   ```json
+   {
+     "email": "admin@example.com",
+     "password": "admin123456"
+   }
+   ```
+
+2. **Set Authorization**: Click 🔒 "Authorize" button, enter:
+   ```
+   Bearer YOUR_TOKEN_HERE
+   ```
+
+3. **Test protected APIs**: Now you can test favorites, watch-history, etc.
+
+### API Permission Levels
+
+**Public APIs** (No auth):
+- GET /api/v1/movies
+- GET /api/v1/genres
+- POST /api/v1/auth/login
+
+**User APIs** (Need login):
+- /api/v1/favorites/*
+- /api/v1/watch-history/*
+- POST /api/v1/reviews
+
+**Admin APIs** (Need admin login):
+- POST/PUT/DELETE /api/v1/movies
+- POST/PUT/DELETE /api/v1/genres
+- GET /api/v1/reviews/pending
+
+### Common Mistakes
+- ❌ Missing "Bearer " prefix in token
+- ❌ Token expired (7 days)
+- ❌ Using user token for admin APIs
+- ❌ Not clicking "Authorize" button
+
+### Quick Test
+```bash
+# Login
+curl -X POST http://localhost:5000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@example.com","password":"admin123456"}'
+
+# Use token
+curl -X GET http://localhost:5000/api/v1/favorites \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
