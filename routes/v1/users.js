@@ -1,5 +1,6 @@
 const express = require('express');
 const userController = require('../../controllers/user.controller');
+const { validateObjectId } = require('../../utils/validateId');
 const auth = require('../../middleware/auth');
 
 const router = express.Router();
@@ -116,7 +117,7 @@ const router = express.Router();
 router.get('/profile', auth, userController.getProfile);
 router.post('/watch-history', auth, userController.addWatchHistory);
 router.get('/watch-history', auth, userController.getWatchHistory);
-router.delete('/watch-history/:movieId', auth, userController.removeWatchHistory);
+router.delete('/watch-history/:movieId', auth, validateObjectId('movieId'), userController.removeWatchHistory);
 router.post('/favorites', auth, userController.toggleFavorite);
 router.get('/favorites', auth, userController.getFavorites);
 router.get('/recommendations', auth, userController.getRecommendations);

@@ -44,9 +44,7 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Indexes for performance
-userSchema.index({ email: 1 });
-userSchema.index({ username: 1 });
+// Indexes for performance (removed duplicate indexes)
 userSchema.index({ role: 1 });
 userSchema.index({ createdAt: -1 });
 

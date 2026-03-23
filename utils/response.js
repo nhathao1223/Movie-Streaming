@@ -6,12 +6,21 @@ const sendSuccess = (res, data, message = 'Success', statusCode = 200) => {
   });
 };
 
-const sendError = (res, message = 'Error', statusCode = 500, errors = null) => {
-  res.status(statusCode).json({
+const sendError = (res, message = 'Error', statusCode = 500, code = null, errors = null) => {
+  const response = {
     success: false,
-    message,
-    ...(errors && { errors })
-  });
+    message
+  };
+
+  if (code) {
+    response.error = { code };
+  }
+
+  if (errors) {
+    response.errors = errors;
+  }
+
+  res.status(statusCode).json(response);
 };
 
 module.exports = { sendSuccess, sendError };

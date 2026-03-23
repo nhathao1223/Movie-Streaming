@@ -1,20 +1,11 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const express = require('express');
-const favoriteRoutes = require('../routes/v1/favorites');
+const app = require('../test-server');
 const Favorite = require('../models/Favorite');
 const Movie = require('../models/Movie');
 const User = require('../models/User');
 const Genre = require('../models/Genre');
-const auth = require('../middleware/auth');
-const errorHandler = require('../middleware/errorHandler');
 const generateToken = require('../utils/generateToken');
-
-// Create test app
-const app = express();
-app.use(express.json());
-app.use('/api/v1/favorites', favoriteRoutes);
-app.use(errorHandler);
 
 describe('Favorites Routes', () => {
   let testUser, testMovie, testGenre, authToken;

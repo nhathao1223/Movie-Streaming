@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Movie = require('../models/Movie');
 const { sendSuccess, sendError } = require('../utils/response');
+const mongoose = require('mongoose');
 
 exports.getProfile = async (req, res) => {
   try {
@@ -49,6 +50,11 @@ exports.addWatchHistory = async (req, res) => {
   try {
     const { movieId } = req.body;
 
+    // Validate movieId format
+    if (!mongoose.Types.ObjectId.isValid(movieId)) {
+      return sendError(res, 'Invalid movie ID format', 400);
+    }
+
     const movie = await Movie.findById(movieId);
     if (!movie) {
       return sendError(res, 'Movie not found', 404);
@@ -73,7 +79,8 @@ exports.addWatchHistory = async (req, res) => {
 
     sendSuccess(res, null, 'Added to watch history');
   } catch (error) {
-    sendError(res, 'Server error', 500);
+    console.error('Add watch history error:', error);
+    sendError(res, 'Server error: ' + error.message, 500);
   }
 };
 
@@ -108,6 +115,11 @@ exports.toggleFavorite = async (req, res) => {
   try {
     const { movieId } = req.body;
 
+    // Validate movieId format
+    if (!mongoose.Types.ObjectId.isValid(movieId)) {
+      return sendError(res, 'Invalid movie ID format', 400);
+    }
+
     const movie = await Movie.findById(movieId);
     if (!movie) {
       return sendError(res, 'Movie not found', 404);
@@ -130,7 +142,8 @@ exports.toggleFavorite = async (req, res) => {
       sendSuccess(res, null, 'Added to favorites');
     }
   } catch (error) {
-    sendError(res, 'Server error', 500);
+    console.error('Toggle favorite error:', error);
+    sendError(res, 'Server error: ' + error.message, 500);
   }
 };
 

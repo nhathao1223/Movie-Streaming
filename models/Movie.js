@@ -11,8 +11,9 @@ const movieSchema = new mongoose.Schema({
     required: true
   },
   genre: [{
-    type: String,
-    required: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Genre',
+    required: [true, 'At least one genre is required']
   }],
   releaseYear: {
     type: Number,
@@ -56,7 +57,7 @@ const movieSchema = new mongoose.Schema({
 });
 
 // Indexes for performance
-movieSchema.index({ title: 'text', description: 'text', genre: 'text' });
+movieSchema.index({ title: 'text', description: 'text' });
 movieSchema.index({ genre: 1 });
 movieSchema.index({ releaseYear: 1 });
 movieSchema.index({ rating: -1 });

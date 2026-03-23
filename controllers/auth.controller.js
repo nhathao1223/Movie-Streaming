@@ -58,6 +58,7 @@ exports.login = async (req, res, next) => {
     logger.info(`User logged in successfully: ${email}`);
     sendSuccess(res, {
       token,
+
       user: {
         id: user._id,
         username: user.username,

@@ -1,6 +1,7 @@
 const Movie = require('../models/Movie');
 const { sendSuccess, sendError } = require('../utils/response');
 const logger = require('../config/logger');
+const mongoose = require('mongoose');
 
 exports.getStats = async (req, res) => {
   try {
@@ -43,6 +44,12 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      logger.warn(`Invalid ObjectId for update: ${req.params.id}`);
+      return sendError(res, 'Invalid movie ID format', 400);
+    }
+
     const movie = await Movie.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -64,6 +71,12 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      logger.warn(`Invalid ObjectId for delete: ${req.params.id}`);
+      return sendError(res, 'Invalid movie ID format', 400);
+    }
+
     const movie = await Movie.findByIdAndUpdate(
       req.params.id,
       { isActive: false },
@@ -140,7 +153,41 @@ exports.getAll = async (req, res) => {
     let query = { isActive: true };
 
     if (search) query.$text = { $search: search };
-    if (genre) query.genre = { $in: [genre] };
+    
+    // Handle genre filtering - support both genre name and ObjectId
+    if (genre) {
+      const Genre = require('../models/Genre');
+      
+      // Check if genre is ObjectId or name/slug
+      if (mongoose.Types.ObjectId.isValid(genre)) {
+        query.genre = { $in: [genre] };
+      } else {
+        // Find genre by name or slug
+        const genreDoc = await Genre.findOne({
+          $or: [
+            { name: { $regex: genre, $options: 'i' } },
+            { slug: genre.toLowerCase() }
+          ],
+          isActive: true
+        });
+        
+        if (genreDoc) {
+          query.genre = { $in: [genreDoc._id] };
+        } else {
+          // No matching genre found, return empty result
+          return sendSuccess(res, {
+            movies: [],
+            pagination: {
+              page: parseInt(page),
+              limit: parseInt(limit),
+              total: 0,
+              pages: 0
+            }
+          });
+        }
+      }
+    }
+    
     if (year) query.releaseYear = parseInt(year);
     if (minRating || maxRating) {
       query.rating = {};
@@ -156,6 +203,7 @@ exports.getAll = async (req, res) => {
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
     const movies = await Movie.find(query)
+      .populate('genre', 'name slug')
       .sort({ [sortBy]: sortOrder === 'desc' ? -1 : 1 })
       .skip(skip)
       .limit(parseInt(limit));
@@ -172,72 +220,45 @@ exports.getAll = async (req, res) => {
       }
     });
   } catch (error) {
+    logger.error(`Get movies error: ${error.message}`);
     sendError(res, 'Server error', 500);
   }
 };
 
 exports.getById = async (req, res) => {
   try {
-    const movie = await Movie.findById(req.params.id);
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      logger.warn(`Invalid ObjectId: ${req.params.id}`);
+      return sendError(res, 'Invalid movie ID format', 400, 'INVALID_ID');
+    }
+
+    const movie = await Movie.findById(req.params.id)
+      .populate('genre', 'name slug description');
     
     if (!movie || !movie.isActive) {
-      return sendError(res, 'Movie not found', 404);
+      logger.warn(`Movie not found: ${req.params.id}`);
+      return sendError(res, 'Movie not found', 404, 'MOVIE_NOT_FOUND');
     }
 
+    logger.debug(`Movie retrieved: ${movie._id}`);
     sendSuccess(res, movie);
   } catch (error) {
-    sendError(res, 'Server error', 500);
+    logger.error(`Get movie by ID error: ${error.message}`);
+    sendError(res, 'Server error', 500, 'SERVER_ERROR');
   }
 };
 
-exports.create = async (req, res) => {
-  try {
-    const movie = new Movie(req.body);
-    await movie.save();
-    sendSuccess(res, movie, 'Movie created', 201);
-  } catch (error) {
-    sendError(res, 'Server error', 500);
-  }
-};
 
-exports.update = async (req, res) => {
-  try {
-    const movie = await Movie.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-
-    if (!movie) {
-      return sendError(res, 'Movie not found', 404);
-    }
-
-    sendSuccess(res, movie, 'Movie updated');
-  } catch (error) {
-    sendError(res, 'Server error', 500);
-  }
-};
-
-exports.delete = async (req, res) => {
-  try {
-    const movie = await Movie.findByIdAndUpdate(
-      req.params.id,
-      { isActive: false },
-      { new: true }
-    );
-
-    if (!movie) {
-      return sendError(res, 'Movie not found', 404);
-    }
-
-    sendSuccess(res, null, 'Movie deleted');
-  } catch (error) {
-    sendError(res, 'Server error', 500);
-  }
-};
 
 exports.incrementView = async (req, res) => {
   try {
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      logger.warn(`Invalid ObjectId for increment view: ${req.params.id}`);
+      return sendError(res, 'Invalid movie ID format', 400);
+    }
+
     const movie = await Movie.findByIdAndUpdate(
       req.params.id,
       { $inc: { viewCount: 1 } },
@@ -245,11 +266,14 @@ exports.incrementView = async (req, res) => {
     );
 
     if (!movie) {
+      logger.warn(`Increment view failed: Movie not found - ${req.params.id}`);
       return sendError(res, 'Movie not found', 404);
     }
 
+    logger.info(`View count incremented for movie: ${movie._id}`);
     sendSuccess(res, movie, 'View count incremented');
   } catch (error) {
+    logger.error(`Increment view error: ${error.message}`);
     sendError(res, 'Server error', 500);
   }
 };

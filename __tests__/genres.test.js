@@ -1,18 +1,10 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const express = require('express');
-const genreRoutes = require('../routes/v1/genres');
+const app = require('../test-server');
 const Genre = require('../models/Genre');
 const Movie = require('../models/Movie');
 const User = require('../models/User');
-const errorHandler = require('../middleware/errorHandler');
 const generateToken = require('../utils/generateToken');
-
-// Create test app
-const app = express();
-app.use(express.json());
-app.use('/api/v1/genres', genreRoutes);
-app.use(errorHandler);
 
 describe('Genres Routes', () => {
   let adminUser, adminToken;

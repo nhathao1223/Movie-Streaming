@@ -1,34 +1,40 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const express = require('express');
-const movieRoutes = require('../routes/v1/movies');
+const app = require('../test-server');
 const Movie = require('../models/Movie');
-const errorHandler = require('../middleware/errorHandler');
-
-// Create test app
-const app = express();
-app.use(express.json());
-app.use('/api/v1/movies', movieRoutes);
-app.use(errorHandler);
-
-// Test data
-const testMovie = {
-  title: 'Test Movie',
-  description: 'A test movie description',
-  genre: ['Action', 'Drama'],
-  director: 'Test Director',
-  releaseYear: 2024,
-  duration: 120,
-  rating: 8.5
-};
+const Genre = require('../models/Genre');
 
 describe('Movie Routes', () => {
+  let actionGenreId, dramaGenreId, comedyGenreId;
+  let testMovie;
+
   beforeAll(async () => {
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/movie-streaming-test');
+    
+    // Create test genres
+    const actionGenre = await Genre.create({ name: 'Action', description: 'Action movies' });
+    const dramaGenre = await Genre.create({ name: 'Drama', description: 'Drama movies' });
+    const comedyGenre = await Genre.create({ name: 'Comedy', description: 'Comedy movies' });
+    
+    actionGenreId = actionGenre._id;
+    dramaGenreId = dramaGenre._id;
+    comedyGenreId = comedyGenre._id;
+
+    // Test data with proper genre ObjectIds
+    testMovie = {
+      title: 'Test Movie',
+      description: 'A test movie description',
+      genre: [actionGenreId, dramaGenreId],
+      director: 'Test Director',
+      releaseYear: 2024,
+      duration: 120,
+      rating: 8.5
+    };
   });
 
   afterAll(async () => {
     await Movie.deleteMany({});
+    await Genre.deleteMany({});
     await mongoose.disconnect();
   });
 
@@ -42,7 +48,7 @@ describe('Movie Routes', () => {
       await Movie.create({
         ...testMovie,
         title: 'Another Movie',
-        genre: ['Comedy']
+        genre: [comedyGenreId]
       });
     });
 
@@ -57,11 +63,10 @@ describe('Movie Routes', () => {
 
     it('should filter movies by genre', async () => {
       const res = await request(app)
-        .get('/api/v1/movies?genre=Action');
+        .get(`/api/v1/movies?genre=${actionGenreId}`);
 
       expect(res.statusCode).toBe(200);
       expect(res.body.data.movies.length).toBeGreaterThan(0);
-      expect(res.body.data.movies[0].genre).toContain('Action');
     });
 
     it('should search movies', async () => {

@@ -14,11 +14,11 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:5000/api/v1',
+        url: 'http://localhost:5000',
         description: 'Development server'
       },
       {
-        url: 'https://api.moviestreaming.com/api/v1',
+        url: 'https://api.moviestreaming.com',
         description: 'Production server'
       }
     ],
@@ -79,7 +79,7 @@ const options = {
       }
     }
   },
-  apis: ['./routes/*.js']
+  apis: ['./routes/v1/*.js'] // Only scan v1 routes
 };
 
 const swaggerSpec = swaggerJsdoc(options);

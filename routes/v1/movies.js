@@ -2,6 +2,7 @@ const express = require('express');
 const movieController = require('../../controllers/movie.controller');
 const { createMovieValidation, updateMovieValidation, validate } = require('../../validations/movie.validation');
 const { createLimiter } = require('../../middleware/rateLimiter');
+const { validateObjectId } = require('../../utils/validateId');
 const auth = require('../../middleware/auth');
 const admin = require('../../middleware/admin');
 
@@ -224,9 +225,9 @@ router.get('/trending', movieController.getTrending);
 router.get('/top-rated', movieController.getTopRated);
 router.get('/', movieController.getAll);
 router.post('/', createLimiter, auth, admin, createMovieValidation, validate, movieController.create);
-router.get('/:id', movieController.getById);
-router.put('/:id', auth, admin, updateMovieValidation, validate, movieController.update);
-router.delete('/:id', auth, admin, movieController.delete);
-router.put('/:id/view', auth, movieController.incrementView);
+router.get('/:id', validateObjectId('id'), movieController.getById);
+router.put('/:id', auth, admin, validateObjectId('id'), updateMovieValidation, validate, movieController.update);
+router.delete('/:id', auth, admin, validateObjectId('id'), movieController.delete);
+router.put('/:id/view', auth, validateObjectId('id'), movieController.incrementView);
 
 module.exports = router;

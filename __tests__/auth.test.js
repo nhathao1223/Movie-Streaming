@@ -1,15 +1,7 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const express = require('express');
-const authRoutes = require('../routes/v1/auth');
+const app = require('../test-server');
 const User = require('../models/User');
-const errorHandler = require('../middleware/errorHandler');
-
-// Create test app
-const app = express();
-app.use(express.json());
-app.use('/api/v1/auth', authRoutes);
-app.use(errorHandler);
 
 // Test data
 const testUser = {

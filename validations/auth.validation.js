@@ -1,4 +1,5 @@
 const { body, validationResult } = require('express-validator');
+const { sendError } = require('../utils/response');
 
 const registerValidation = [
   body('username')
@@ -24,7 +25,8 @@ const loginValidation = [
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    const errorMessages = errors.array().map(error => error.msg).join(', ');
+    return sendError(res, errorMessages, 400, 'VALIDATION_ERROR', errors.array());
   }
   next();
 };

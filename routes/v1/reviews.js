@@ -2,6 +2,7 @@ const express = require('express');
 const reviewController = require('../../controllers/review.controller');
 const { createReviewValidation, updateReviewValidation, validate } = require('../../validations/review.validation');
 const { createLimiter } = require('../../middleware/rateLimiter');
+const { validateObjectId } = require('../../utils/validateId');
 const auth = require('../../middleware/auth');
 const admin = require('../../middleware/admin');
 
@@ -130,9 +131,9 @@ const router = express.Router();
 router.post('/', createLimiter, auth, createReviewValidation, validate, reviewController.create);
 router.get('/user/my-reviews', auth, reviewController.getMyReviews);
 router.get('/pending', auth, admin, reviewController.getPending);
-router.get('/movie/:movieId', reviewController.getByMovie);
-router.put('/:id', auth, updateReviewValidation, validate, reviewController.update);
-router.delete('/:id', auth, reviewController.delete);
-router.put('/:id/approve', auth, admin, reviewController.approve);
+router.get('/movie/:movieId', validateObjectId('movieId'), reviewController.getByMovie);
+router.put('/:id', auth, validateObjectId('id'), updateReviewValidation, validate, reviewController.update);
+router.delete('/:id', auth, validateObjectId('id'), reviewController.delete);
+router.put('/:id/approve', auth, admin, validateObjectId('id'), reviewController.approve);
 
 module.exports = router;

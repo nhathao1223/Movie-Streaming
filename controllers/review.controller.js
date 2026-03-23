@@ -7,6 +7,11 @@ exports.create = async (req, res) => {
   try {
     const { movieId, rating, title, comment } = req.body;
 
+    // Validate movieId format
+    if (!mongoose.Types.ObjectId.isValid(movieId)) {
+      return sendError(res, 'Invalid movie ID format', 400);
+    }
+
     const movie = await Movie.findById(movieId);
     if (!movie) {
       return sendError(res, 'Movie not found', 404);
@@ -34,12 +39,18 @@ exports.create = async (req, res) => {
 
     sendSuccess(res, review, 'Review created', 201);
   } catch (error) {
-    sendError(res, 'Server error', 500);
+    console.error('Create review error:', error);
+    sendError(res, 'Server error: ' + error.message, 500);
   }
 };
 
 exports.getByMovie = async (req, res) => {
   try {
+    // Validate movieId format
+    if (!mongoose.Types.ObjectId.isValid(req.params.movieId)) {
+      return sendError(res, 'Invalid movie ID format', 400);
+    }
+
     const { page = 1, limit = 10, sortBy = 'createdAt' } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
@@ -58,7 +69,7 @@ exports.getByMovie = async (req, res) => {
     });
 
     const ratingStats = await Review.aggregate([
-      { $match: { movie: mongoose.Types.ObjectId(req.params.movieId), isApproved: true } },
+      { $match: { movie: new mongoose.Types.ObjectId(req.params.movieId), isApproved: true } },
       {
         $group: {
           _id: null,
@@ -110,16 +121,23 @@ exports.getPending = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return sendError(res, 'Invalid review ID format', 400);
+    }
+
     let review = await Review.findById(req.params.id);
 
     if (!review) {
       return sendError(res, 'Review not found', 404);
     }
 
+    // Check if user is the owner of the review
     if (review.user.toString() !== req.user._id.toString()) {
-      return sendError(res, 'Not authorized', 403);
+      return sendError(res, 'Access denied. You can only update your own reviews', 403);
     }
 
+    // Update the review
     review = await Review.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -128,40 +146,58 @@ exports.update = async (req, res) => {
 
     sendSuccess(res, review, 'Review updated');
   } catch (error) {
-    sendError(res, 'Server error', 500);
+    console.error('Update review error:', error);
+    sendError(res, 'Server error: ' + error.message, 500);
   }
 };
 
 exports.delete = async (req, res) => {
   try {
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return sendError(res, 'Invalid review ID format', 400);
+    }
+
     const review = await Review.findById(req.params.id);
 
     if (!review) {
       return sendError(res, 'Review not found', 404);
     }
 
+    // Check if user is the owner or admin
     if (review.user.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-      return sendError(res, 'Not authorized', 403);
+      return sendError(res, 'Access denied. You can only delete your own reviews or be an admin', 403);
     }
 
     await Review.findByIdAndDelete(req.params.id);
 
     sendSuccess(res, null, 'Review deleted');
   } catch (error) {
-    sendError(res, 'Server error', 500);
+    console.error('Delete review error:', error);
+    sendError(res, 'Server error: ' + error.message, 500);
   }
 };
 
 exports.approve = async (req, res) => {
   try {
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return sendError(res, 'Invalid review ID format', 400);
+    }
+
     const review = await Review.findByIdAndUpdate(
       req.params.id,
       { isApproved: true },
       { new: true }
     ).populate('user', 'username');
 
+    if (!review) {
+      return sendError(res, 'Review not found', 404);
+    }
+
     sendSuccess(res, review, 'Review approved');
   } catch (error) {
-    sendError(res, 'Server error', 500);
+    console.error('Approve review error:', error);
+    sendError(res, 'Server error: ' + error.message, 500);
   }
 };
